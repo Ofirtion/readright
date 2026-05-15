@@ -1,8 +1,10 @@
 # ReadRight 📚
 
-אב-טיפוס לאפליקציית קריאה חכמה לילדים, מבוססת על Web Speech API לזיהוי דיבור בעברית בזמן אמת.
+אפליקציית AI לשיפור קריאה לילדים בעברית, עם זיהוי דיבור בזמן אמת.
 
-## הפעלה מקומית
+🔴 **גרסה 0.3** — אפליקציה מלאה עם פרופילי ילדים, ספריית סיפורים, **ייבוא תוכן מותאם** (טקסט/URL/קובץ עם OCR), דשבורד התקדמות, ומערכת מייל שבועי.
+
+## הפעלה מהירה
 
 ```bash
 npm install
@@ -11,12 +13,104 @@ npm run dev
 
 האפליקציה תרוץ על http://localhost:5173
 
-## בנייה לפרודקשן
+## מבנה הפרויקט
 
-```bash
-npm run build
-npm run preview
 ```
+readright/
+├── src/
+│   ├── App.jsx                    # ראוטר ראשי - מנהל את הניווט בין מסכים
+│   ├── main.jsx                   # entry point
+│   ├── index.css                  # Tailwind + RTL globals
+│   │
+│   ├── context/
+│   │   ├── AuthContext.jsx        # Auth פעיל (mock עם localStorage)
+│   │   └── AuthContext.supabase.jsx  # גרסת Supabase מוכנה להחלפה
+│   │
+│   ├── pages/
+│   │   ├── Landing.jsx            # דף נחיתה + Google Sign-In
+│   │   ├── ChildOnboarding.jsx    # יצירת פרופיל ילד (5 שלבים)
+│   │   ├── Home.jsx               # בית להורה - רשימת ילדים
+│   │   ├── StoryLibrary.jsx       # ספריית 16 סיפורים + סיפורים מותאמים
+│   │   ├── Reading.jsx            # מסך קריאה עם מיקרופון בזמן אמת
+│   │   ├── Dashboard.jsx          # דשבורד התקדמות לילד
+│   │   └── ImportContent.jsx      # ייבוא תוכן: טקסט/URL/קובץ עם OCR
+│   │
+│   ├── components/
+│   │   ├── Layout.jsx             # כותרת + ניווט עליון משותפים
+│   │   └── WeeklyEmailSettings.jsx # הגדרות מייל שבועי + תצוגה מקדימה
+│   │
+│   ├── data/
+│   │   ├── stories.js             # 5 סיפורים מקוריים
+│   │   └── stories2.js            # 11 סיפורים חדשים
+│   │
+│   └── lib/
+│       ├── theme.js               # design tokens (צבעים, פונטים, רמות)
+│       └── contentImport.js       # pipeline ייבוא: טקסט / URL / קובץ + OCR + ניקוד
+│
+├── public/
+│   └── favicon.svg
+├── index.html                     # RTL + Google Fonts
+├── NEXT_STEPS.md                  # מדריך חיבור Supabase מלא
+├── package.json
+└── vite.config.js
+```
+
+## תכונות
+
+### ✅ מה עובד עכשיו (mock auth)
+- הרשמה / כניסה (mock)
+- יצירת פרופילי ילדים מרובים
+- ספריית 16 סיפורים בעברית עם ניקוד מלא
+- **ייבוא תוכן מותאם:**
+  - הדבקת טקסט גולמי
+  - קישור לדף אינטרנט (חילוץ אוטומטי)
+  - העלאת תמונה (OCR לעברית ב-Tesseract)
+  - העלאת PDF (חילוץ + OCR לקבצים סרוקים)
+  - ניקוד אוטומטי באמצעות Dicta Nakdan API
+- 5 רמות קריאה (כיתה א׳ עד כיתה ז׳+)
+- 12 תחומי עניין למיון אוטומטי
+- זיהוי דיבור בזמן אמת (Web Speech API)
+- מעקב מילה-במילה עם רמזים
+- שמירת קריאות + מטריקות (WCPM, דיוק, טעויות)
+- דשבורד עם גרף התקדמות
+- תובנות AI אוטומטיות
+- תצוגה מקדימה של מייל שבועי
+
+### 🔌 מה דורש חיבור (ראה NEXT_STEPS.md)
+- Google OAuth אמיתי
+- שמירת נתונים ב-Supabase במקום localStorage
+- שליחת מייל שבועי אמיתי (Resend / SendGrid)
+- ייתכן ויידרש backend proxy לעקיפת CORS של Dicta בפרודקשן
+
+## הסיפורים
+
+16 סיפורים בעברית עם ניקוד מלא, מסודרים לפי רמה:
+
+**רמה 1** (כיתה א׳ / מתחילים):
+- התפוח האדום
+- הכלבלב הקטן
+- הפרפר והפרח
+- יום גשום
+- עוגת יום הולדת
+
+**רמה 2** (כיתה ב׳):
+- דנה והחתול מהחלל
+- הביצה של הדינוזאור
+- התעלומה בחוף הים
+- החלום של איתי (כדורגל)
+
+**רמה 3** (כיתה ג׳-ד׳):
+- תעלומת היער הקסום
+- הממציאה הקטנה
+- האריה והעכבר
+
+**רמה 4** (כיתה ה׳-ו׳):
+- מכונת הזמן של סבא
+- מסע במדבר
+
+**רמה 5** (כיתה ז׳+):
+- המלך החכם והאיכר
+- משימה בחלקי החלל
 
 ## דרישות דפדפן
 
@@ -26,47 +120,30 @@ npm run preview
 - **Safari** ⚠️ תמיכה מוגבלת בעברית
 - **Firefox** ❌ לא תומך
 
-חייבים לרוץ על **HTTPS** (או localhost) כדי שהמיקרופון יעבוד.
+חייבים HTTPS (או localhost) כדי שהמיקרופון יעבוד.
 
 ## דיפלוי
 
-מומלץ Vercel, Netlify, או GitHub Pages — כולם מספקים HTTPS אוטומטית.
+מומלץ Vercel — מספק HTTPS אוטומטית.
 
-### דיפלוי מהיר ל-Vercel:
-1. דחוף את הקוד ל-GitHub
-2. היכנס ל-vercel.com → New Project → Import Repository
-3. Vercel יזהה אוטומטית שזה Vite ויפרוס
+```bash
+npm run build    # יוצר תיקיית dist/
+npm run preview  # בודק את הגרסה הסופית מקומית
+```
 
 ## טכנולוגיות
 
-- **React 18** + **Vite** — frontend framework
+- **React 18** + **Vite** — frontend
 - **Tailwind CSS** — styling
-- **Web Speech API** — זיהוי דיבור בעברית
-- **Web Audio API** — ניטור עוצמת מיקרופון בזמן אמת
+- **Web Speech API** — זיהוי דיבור עברית
+- **Web Audio API** — ניטור מיקרופון
 - **Lucide Icons** — אייקונים
+- **localStorage** — אחסון זמני
+- **Supabase** (בעתיד) — database + auth
 
-## מבנה הפרויקט
+## הצעדים הבאים
 
-```
-readright/
-├── src/
-│   ├── App.jsx       # כל הלוגיקה והממשק
-│   ├── main.jsx      # entry point
-│   └── index.css     # Tailwind imports
-├── public/
-│   └── favicon.svg
-├── index.html
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-└── postcss.config.js
-```
-
-## הרחבות עתידיות
-
-המוצר האמיתי ידרוש:
-- Backend עם Whisper מותאם לעברית של ילדים
-- מאגר סיפורים דינמי (Claude API)
-- שמירת התקדמות ב-database
-- דשבורד הורה
-- COPPA / GDPR-K compliance
+ראה [`NEXT_STEPS.md`](./NEXT_STEPS.md) למדריך מפורט על:
+1. העלאה ל-GitHub
+2. חיבור Supabase + Google OAuth
+3. שליחת מייל שבועי אמיתי
